@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 enum Sides {Top, Left, Right, Bottom };
-
+//discretize the walls of the world and then select a start and end position for the flying objects at random
 float Y_VALS[4] = {0.0f, (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 3.0f, 2 * (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 3.0f, (SCREEN_HEIGHT - SHIFT_DUE_TO_UI)};
 float X_VALS[4] = {SCREEN_WIDTH / 3.0f, 0.0f, SCREEN_WIDTH, 2 * SCREEN_WIDTH / 3.0f};
 
@@ -112,7 +112,7 @@ void FlyingObject::PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice)
 		colors.push_back(1.0f);
 		colors.push_back(1.0f);
 	}
-	//polyIndex = polygons.addPolygon(numSides + 1, vertices, colors, gDevice);
+
 	polyIndex = polygons.AddPolygon(numSides, vertices, colors, gDevice);
 	vertices.clear();
 	colors.clear();
@@ -155,6 +155,7 @@ void FlyingObject::CheckHit(int x, int y, PolygonManager& polygons, MyGraphicsDe
 {
 	if( DistanceFormula(originX, x, originY, y) <= 2 * RADIUS )
 	{
-		polygons.ChangeColor(polyIndex, 1.0f, 0.0f, 1.0f);
+		//polygons.ChangeColor(polyIndex, 1.0f, 0.0f, 1.0f);
+		polygons.deletePolygon(this->polyIndex, gDevice);
 	}
 }

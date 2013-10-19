@@ -4,12 +4,14 @@
 #define VERTICES 0
 #define COLORS 1
 #define INDICES 2
+
 #include "Header.h"
 #include "GameConstants.h"
 #include "polygonData.h"
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <vector>
+
 class MyGraphicsDevice
 {
 private:
@@ -136,6 +138,11 @@ public:
 	
 	//send data to GPU
 	void UpdateData(PolygonData poly);
+
+	void DeletePolygon(int countIndex)
+	{
+		counts[countIndex] = 0;
+	}
 };
 
 #endif

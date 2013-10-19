@@ -3,13 +3,58 @@
 //Add a new polygon to the GPU buffer
 int PolygonManager::AddPolygon(int vertexCount, std::vector<GLfloat> vertices, std::vector<GLfloat> colors, MyGraphicsDevice& gDevice)
 {
-	GLintptr lVertices = -1, lColors = -1;
-	int lCount = -1;
-	gDevice.PushData(vertexCount, vertices, colors, &lVertices, &lColors, &lCount);
-	PolygonData poly = PolygonData(vertexCount, lVertices, vertices, lColors, colors, lCount);
-	polygons.push_back(poly);
-	//return &poly;
-	return polygons.size() - 1;
+	if( deletedPolygons.size() > 0 )
+	{
+		int pIndex = deletedPolygons.front().polyIndex;
+		polygons[pIndex].countLocation = deletedPolygons.front().countLocation;
+		polygons[pIndex].location = deletedPolygons.front().startPosition;
+		polygons[pIndex].colorLocation = deletedPolygons.front().colorLocation;
+		polygons[pIndex].updated = true;
+		polygons[pIndex].vertexCount = deletedPolygons.front().vertexCount;
+		polygons[pIndex].vertexData = vertices;
+		polygons[pIndex].vertexColors = colors;
+
+		gDevice.UpdateData(polygons[pIndex]);
+
+		deletedPolygons.pop_front();
+
+		return pIndex;
+	}
+	else
+	{
+		GLintptr lVertices = -1, lColors = -1;
+		int lCount = -1;
+		gDevice.PushData(vertexCount, vertices, colors, &lVertices, &lColors, &lCount);
+		PolygonData poly = PolygonData(vertexCount, lVertices, vertices, lColors, colors, lCount);
+		polygons.push_back(poly);
+		return polygons.size() - 1;
+	}
+}
+
+//deletes polygon from polygon list
+void PolygonManager::deletePolygon(int polygonIndex, MyGraphicsDevice gDevice)
+{
+	for( unsigned int i = 0; i < polygons[polygonIndex].vertexData.size() ; i+=4 )
+	{
+		polygons[polygonIndex].vertexData[i] = 0.0f;
+		polygons[polygonIndex].vertexData[i + 1] = 0.0f;
+		polygons[polygonIndex].vertexData[i + 2] = 0.0;
+		polygons[polygonIndex].vertexData[i + 3] = 0.0;
+	}
+	
+	for( unsigned int i = 0; i < polygons[polygonIndex].vertexColors.size() ; i+=4 )
+	{
+		polygons[polygonIndex].vertexColors[i] = 0.0f;
+		polygons[polygonIndex].vertexColors[i + 1] = 0.0f;
+		polygons[polygonIndex].vertexColors[i + 2] = 0.0;
+		polygons[polygonIndex].vertexColors[i + 3] = 0.0;
+	}
+
+	//add metadata about deleted polygon to deleted list
+	freeSpot freed = freeSpot(polygons[polygonIndex].vertexCount, polygons[polygonIndex].location, polygons[polygonIndex].colorLocation
+			, polygons[polygonIndex].countLocation, polygonIndex);
+	deletedPolygons.push_back(freed);
+	gDevice.DeletePolygon(polygons[polygonIndex].countLocation);
 }
 
 

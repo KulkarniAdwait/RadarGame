@@ -69,24 +69,9 @@ public:
 		}
 	}
 
-	////deletes the given polygon from the GPU buffer
-	////makes entry into deleted list
-	//void deletePolygon(polygonData*& polygon)
-	//{
-	//	for( unsigned int i = 0; i < polygon->vertexData.size() ; i+=4 )
-	//	{
-	//		polygon->vertexData[i] = 0.0f;
-	//		polygon->vertexData[i + 1] = 0.0f;
-	//		//the high z and w values essentially "delete" the vertex. Force it to be drawn off screen
-	//		polygon->vertexData[i + 2] = 9999.0f;
-	//		polygon->vertexData[i + 3] = 9999.0f;
-	//	}
-	//	//add metadata about deleted polygon to deleted list
-	//	freeSpot freed = freeSpot(polygon->vertexCount, polygon->location);
-	//	deletedPolygons.push_back(freed);
-	//	//four floats each of four bytes
-	//	//MainWindow::getCurrent()->txtUpdateIndex->set_text(std::to_string(polygon->location / 16).c_str());
-	//}
+	//deletes the given polygon from the GPU buffer
+	//makes entry into deleted list
+	void deletePolygon(int polygonIndex, MyGraphicsDevice gDevice);
 
 	void ChangeColor(int polygonIndex, float newRed, float newGreen, float newBlue)
 	{
