@@ -15,10 +15,9 @@ char* TextFileRead(const char *fn);
 
 //Adwait Kulkarni
 void HandleMouse(int button, int state, int x, int y);
-//void PushData();
-void ScreenToNormalized(const int& x, const int& y, float& normX, float& normY);
 void Display();
 void Update();
 void GameLoop( int t );
+void InitGraphics(int argc, char *argv[]);
 
 #endif

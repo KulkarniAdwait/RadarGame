@@ -60,13 +60,14 @@ private:
 		//not updating z & w because they are always 0.0 & 1.0		
 	}
 public:
-	FlyingObject(int);
+
+	FlyingObject(int startSide, PolygonManager& polygons, MyGraphicsDevice& gDevice);
 
 	void PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice);
 
 	void Update(PolygonManager& polygons, Radar* radar);
 
-	void CheckHit(int x, int y, PolygonManager& polygons, MyGraphicsDevice& gDevice);
+	bool CheckHit(int x, int y, PolygonManager& polygons, MyGraphicsDevice& gDevice);
 
 };
 

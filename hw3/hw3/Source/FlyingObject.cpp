@@ -2,10 +2,31 @@
 #include <time.h>
 #include <stdlib.h>
 
+#define DIVISIONS 10
 enum Sides {Top, Left, Right, Bottom };
 //discretize the walls of the world and then select a start and end position for the flying objects at random
-float Y_VALS[4] = {0.0f, (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 3.0f, 2 * (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 3.0f, (SCREEN_HEIGHT - SHIFT_DUE_TO_UI)};
-float X_VALS[4] = {SCREEN_WIDTH / 3.0f, 0.0f, SCREEN_WIDTH, 2 * SCREEN_WIDTH / 3.0f};
+float Y_VALS[DIVISIONS] = {0.0f //top
+	, (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 9.0f
+	, 2 * (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 9.0f
+	, (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) //bottom
+	, 3 * (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 9.0f
+	, 4 * (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 9.0f
+	, 5 * (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 9.0f
+	, 6 * (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 9.0f
+	, 7 * (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 9.0f
+	, 8 * (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 9.0f
+	};
+float X_VALS[DIVISIONS] = {SCREEN_WIDTH / 9.0f
+	, 0.0f //left
+	, SCREEN_WIDTH //right
+	, 2 * SCREEN_WIDTH / 9.0f
+	, 3 * SCREEN_WIDTH / 9.0f
+	, 4 * SCREEN_WIDTH / 9.0f
+	, 5 * SCREEN_WIDTH / 9.0f
+	, 6 * SCREEN_WIDTH / 9.0f
+	, 7 * SCREEN_WIDTH / 9.0f
+	, 8 * SCREEN_WIDTH / 9.0f
+	};
 
 float VectorDot(glm::vec2 v1, glm::vec2 v2)
 {
@@ -22,21 +43,22 @@ float DistanceFormula (float x1, float x2, float y1, float y2)
 	return glm::sqrt(((x2- x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
 }
 
-FlyingObject::FlyingObject(int startSide)
+FlyingObject::FlyingObject(int startSide, PolygonManager& polygons, MyGraphicsDevice& gDevice)
 {
 	recognized = false;
-	SPEED = 0.0005f;
+	SPEED = 0.00099f;
 
 	polyIndex = -1;
 	alpha = 0.0f;
 
-	if( (std::rand() % 2) == 0 )
+	//1 in 8 chance of being friendly
+	if( (std::rand() % 8) == 0 )
 	{
-		isFriendly = false;
+		isFriendly = true;
 	}
 	else
 	{
-		isFriendly = true;
+		isFriendly = false;
 	}
 	
 	switch(startSide)
@@ -47,8 +69,8 @@ FlyingObject::FlyingObject(int startSide)
 			startY = Y_VALS[Top];
 			dirY = Y_VALS[Bottom];
 			//start and end Y can be random
-			startX = X_VALS[std::rand() % 4];
-			dirX = X_VALS[std::rand() % 4] - startX;
+			startX = X_VALS[std::rand() % DIVISIONS];
+			dirX = X_VALS[std::rand() % DIVISIONS] - startX;
 		break;
 		//LEFT
 		case Left:
@@ -56,8 +78,8 @@ FlyingObject::FlyingObject(int startSide)
 			startX = X_VALS[Left];
 			dirX = X_VALS[Right];
 			//start and end Y can be random
-			startY = Y_VALS[std::rand() % 4];
-			dirY = Y_VALS[std::rand() % 4] - startY;
+			startY = Y_VALS[std::rand() % DIVISIONS];
+			dirY = Y_VALS[std::rand() % DIVISIONS] - startY;
 		break;
 		//BOTTOM
 		case Bottom:
@@ -65,8 +87,8 @@ FlyingObject::FlyingObject(int startSide)
 			startY = Y_VALS[Bottom];
 			dirY = Y_VALS[Top] - startY;
 			//start and end Y can be random
-			startX = X_VALS[std::rand() % 4];
-			dirX = X_VALS[std::rand() % 4] - startX;
+			startX = X_VALS[std::rand() % DIVISIONS];
+			dirX = X_VALS[std::rand() % DIVISIONS] - startX;
 		break;
 		//RIGHT
 		case Right:
@@ -74,8 +96,8 @@ FlyingObject::FlyingObject(int startSide)
 			startX = X_VALS[Right];
 			dirX = X_VALS[Left] - startX;
 			//start and end Y can be random
-			startY = Y_VALS[std::rand() % 4];
-			dirY = Y_VALS[std::rand() % 4] - startY;
+			startY = Y_VALS[std::rand() % DIVISIONS];
+			dirY = Y_VALS[std::rand() % DIVISIONS] - startY;
 		break;
 
 	}
@@ -83,6 +105,7 @@ FlyingObject::FlyingObject(int startSide)
 	originY = 0.0f;
 
 	objVec = glm::vec2(0.0f, 0.0f);
+	PushData(polygons, gDevice);
 }
 
 void FlyingObject::PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice)
@@ -151,11 +174,12 @@ void FlyingObject::Update(PolygonManager& polygons, Radar* radar)
 	}
 }
 
-void FlyingObject::CheckHit(int x, int y, PolygonManager& polygons, MyGraphicsDevice& gDevice)
+bool FlyingObject::CheckHit(int x, int y, PolygonManager& polygons, MyGraphicsDevice& gDevice)
 {
 	if( DistanceFormula(originX, x, originY, y) <= 2 * RADIUS )
 	{
-		//polygons.ChangeColor(polyIndex, 1.0f, 0.0f, 1.0f);
 		polygons.deletePolygon(this->polyIndex, gDevice);
+		return true;
 	}
+	return false;
 }

@@ -18,23 +18,9 @@ PolygonManager polygonManager;
 Radar *radar;
 std::list<FlyingObject*> flyingObjects;
 int index = 0, vertexCount = 0;
-
-bool radarLoaded;
-
-//vector<GLfloat> vertexData;
-//vector<GLfloat> colorData;
-//vector<GLuint> indexData;
-
-//converts screen coordinates to GL coordinates i.e from -1 to +1
-void ScreenToNormalized(const int& x, const int& y, float& normX, float& normY)
-{
-	//normX = ((2.0f * x) / SCREEN_WIDTH) - 1.0f;
-	//normY = ((-2.0f * y) / SCREEN_HEIGHT) + 1.0f;
-	//return;
-}
+extern int DIFFICULTY = 10;
 
 //left click handles clicks on the canvas
-//right click pushes data to GPU
 void HandleMouse(int button, int state, int x, int y)
 {
 	switch(state)
@@ -45,15 +31,21 @@ void HandleMouse(int button, int state, int x, int y)
 		{
 		case GLUT_LEFT_BUTTON:
 			std::list<FlyingObject*>::iterator it = flyingObjects.begin();
-			for( ; it != flyingObjects.end(); it++ )
+			while( it != flyingObjects.end() )
 			{
-				(**it).CheckHit(x, y, polygonManager, gDevice);
+				if( (**it).CheckHit(x, y, polygonManager, gDevice) )
+				{
+					//destroy object
+					delete *it;
+					//remove from list
+					it = flyingObjects.erase(it);
+				}
+				else
+				{
+					++it;
+				}
 			}
 		break;
-
-		//case GLUT_RIGHT_BUTTON:
-
-		//	break;
 		}
 	break;
 	}
@@ -61,10 +53,18 @@ void HandleMouse(int button, int state, int x, int y)
 
 void Update()
 {
+	if( flyingObjects.size() < MAX_UFO_COUNT )
+	{
+		int startSide = std::rand() % 4;
+		FlyingObject *fo = new FlyingObject(startSide, polygonManager, gDevice);
+		flyingObjects.push_back(fo);
+		fo = NULL;
+	}
+
 	radar->Update(polygonManager);
-	//fo->Update(polygonManager);
 	std::list<FlyingObject*>::iterator it = flyingObjects.begin();
-	for( ; it != flyingObjects.end(); it++ )
+
+	for( it = flyingObjects.begin() ; it != flyingObjects.end(); ++it )
 	{
 		(**it).Update(polygonManager, radar);
 	}
@@ -85,7 +85,27 @@ void Display()
 
 int main(int argc, char *argv[]) {
 
-	radarLoaded = false;
+	InitGraphics(argc, argv);
+	//allocate the buffers
+	gDevice.Init();
+
+	radar = new Radar();
+	radar->PushData(polygonManager, gDevice);
+
+	//start and direction must be selected randomly
+	std::srand(std::time(NULL));
+
+	//run game loop
+	glutTimerFunc( 1000 / FRAME_RATE, GameLoop, 0 ); 
+    // enter the event loop
+	glutMainLoop();
+
+    return 0;
+}
+
+
+void InitGraphics(int argc, char *argv[])
+{
 	// initialize glut
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
@@ -111,45 +131,6 @@ int main(int argc, char *argv[]) {
 	
 	// activate shader program
 	glUseProgram(shader_program);
-	
-	//allocate the buffers
-	gDevice.Init();
-	radar = new Radar();
-	radar->PushData(polygonManager, gDevice);
-
-	//start and direction mustbe selected randomly
-	std::srand(std::time(NULL));
-	int startSide = std::rand() % 4;
-
-	FlyingObject *fo = new FlyingObject(startSide);
-	fo->PushData(polygonManager, gDevice);
-	flyingObjects.push_back(fo);
-	fo = NULL;
-
-	startSide = std::rand() % 4;
-	fo = new FlyingObject(startSide);
-	fo->PushData(polygonManager, gDevice);
-	flyingObjects.push_back(fo);
-	fo = NULL;
-
-	startSide = std::rand() % 4;
-	fo = new FlyingObject(startSide);
-	fo->PushData(polygonManager, gDevice);
-	flyingObjects.push_back(fo);
-	fo = NULL;
-
-	startSide = std::rand() % 4;
-	fo = new FlyingObject(startSide);
-	fo->PushData(polygonManager, gDevice);
-	flyingObjects.push_back(fo);
-	fo = NULL;
-	
-	//run game loop
-	glutTimerFunc( 1000 / FRAME_RATE, GameLoop, 0 ); 
-    // enter the event loop
-	glutMainLoop();
-
-    return 0;
 }
 
 GLuint InitShader(const char* vs_file, const char* fs_file) {
