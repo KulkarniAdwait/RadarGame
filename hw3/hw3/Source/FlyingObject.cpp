@@ -108,6 +108,26 @@ FlyingObject::FlyingObject(int startSide, PolygonManager& polygons, MyGraphicsDe
 	PushData(polygons, gDevice);
 }
 
+void RotatePoints(float x, float y, float& rotX, float& rotY, int angle)
+{
+	using namespace glm;
+	float aRadians = radians((float)angle);
+		
+	//rotation matrix in column major
+	mat4x4 Rmat = mat4x4(cos(aRadians), -sin(aRadians), 0.0f, 0.0f,
+					sin(aRadians), cos(aRadians), 0.0f, 0.0f, 
+					0.0f, 0.0f, 1.0f, 0.0f,
+					0.0f, 0.0f, 0.0f, 1.0f);
+
+	vec4 Overts, Rverts;
+		
+	Overts = vec4(x, y, 0.f, 1.f);
+	Rverts = Rmat * Overts;
+	rotX = Rverts.x;
+	rotY = Rverts.y;
+	//not updating z & w because they are always 0.0 & 1.0		
+}
+
 void FlyingObject::PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice)
 {
 	std::vector<GLfloat> vertices;
@@ -124,7 +144,7 @@ void FlyingObject::PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice)
 	//about the origin 0,0
 	for(int i = 0; i < numSides; i++ )
 	{
-		RotatePoints(oldX, oldY, oldX, oldY);
+		RotatePoints(oldX, oldY, oldX, oldY, ANGLE);
 		vertices.push_back(oldX);
 		vertices.push_back(oldY);
 		vertices.push_back(0.0f);

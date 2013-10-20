@@ -11,7 +11,6 @@
 class FlyingObject
 {
 private:
-	bool isFriendly;
 	bool recognized;
 	//this is the index into the polygonManager
 	int polyIndex;
@@ -40,27 +39,8 @@ private:
 	//vector betn object and origin
 	glm::vec2 objVec;
 
-	void RotatePoints(float x, float y, float& rotX, float& rotY)
-	{
-		using namespace glm;
-		float aRadians = radians((float)ANGLE);
-		
-		//rotation matrix in column major
-		mat4x4 Rmat = mat4x4(cos(aRadians), -sin(aRadians), 0.0f, 0.0f,
-						sin(aRadians), cos(aRadians), 0.0f, 0.0f, 
-						0.0f, 0.0f, 1.0f, 0.0f,
-						0.0f, 0.0f, 0.0f, 1.0f);
-
-		vec4 Overts, Rverts;
-		
-		Overts = vec4(x, y, 0.f, 1.f);
-		Rverts = Rmat * Overts;
-		rotX = Rverts.x;
-		rotY = Rverts.y;
-		//not updating z & w because they are always 0.0 & 1.0		
-	}
 public:
-
+	bool isFriendly;
 	FlyingObject(int startSide, PolygonManager& polygons, MyGraphicsDevice& gDevice);
 
 	void PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice);

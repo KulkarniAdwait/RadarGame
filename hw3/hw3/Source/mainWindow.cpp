@@ -19,6 +19,9 @@ Radar *radar;
 std::list<FlyingObject*> flyingObjects;
 int index = 0, vertexCount = 0;
 extern int DIFFICULTY = 10;
+int score = 0;
+const int SCR_FRIENDLY_HIT = -20;
+const int SCR_ENEMY_HIT = 5;
 
 //left click handles clicks on the canvas
 void HandleMouse(int button, int state, int x, int y)
@@ -35,10 +38,20 @@ void HandleMouse(int button, int state, int x, int y)
 			{
 				if( (**it).CheckHit(x, y, polygonManager, gDevice) )
 				{
+					//update score
+					if((*it)->isFriendly)
+					{
+						score += SCR_FRIENDLY_HIT;
+					}
+					else
+					{
+						score += SCR_ENEMY_HIT;
+					}
 					//destroy object
 					delete *it;
 					//remove from list
 					it = flyingObjects.erase(it);
+					break;
 				}
 				else
 				{
@@ -53,6 +66,7 @@ void HandleMouse(int button, int state, int x, int y)
 
 void Update()
 {
+	//create UFO's if there are too few
 	if( flyingObjects.size() < MAX_UFO_COUNT )
 	{
 		int startSide = std::rand() % 4;
@@ -63,7 +77,6 @@ void Update()
 
 	radar->Update(polygonManager);
 	std::list<FlyingObject*>::iterator it = flyingObjects.begin();
-
 	for( it = flyingObjects.begin() ; it != flyingObjects.end(); ++it )
 	{
 		(**it).Update(polygonManager, radar);
@@ -108,7 +121,7 @@ void InitGraphics(int argc, char *argv[])
 {
 	// initialize glut
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_ALPHA);
 	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow("glMultiDrawElements Example");
