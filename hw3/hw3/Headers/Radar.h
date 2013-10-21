@@ -67,13 +67,14 @@ public:
 		polyIndex = -1;
 		angle = -3.0f;
 		radius = SCREEN_WIDTH / 2;
+		
 		//origin
-		radarVertices.push_back(SCREEN_WIDTH / 2.0f);
-		radarVertices.push_back(SCREEN_HEIGHT / 2.0f - SHIFT_DUE_TO_UI);
+		radarVertices.push_back(SCREEN_WIDTH / 2.0);
+		radarVertices.push_back(SCREEN_HEIGHT / 2.0 - SHIFT_DUE_TO_UI);
 		radarVertices.push_back(0.0f);
 		radarVertices.push_back(1.0f);
 
-		radarVertices.push_back((float)SCREEN_WIDTH / 2.0f);
+		radarVertices.push_back(SCREEN_WIDTH / 2.0);
 		radarVertices.push_back(0.0f);
 		radarVertices.push_back(0.0f);
 		radarVertices.push_back(1.0f);
@@ -138,10 +139,14 @@ public:
 		if(polyIndex != -1)
 		{
 			polygons.RotatePolygon(0, polyIndex, angle);
-			//x is at 0 and 4
-			radarVec.x = polygons.polygons[polyIndex].vertexData[4] - polygons.polygons[polyIndex].vertexData[0];
-			//y is at 1 and 5
-			radarVec.y = polygons.polygons[polyIndex].vertexData[5] - polygons.polygons[polyIndex].vertexData[1];
+
+			//floatingpoint rotation is throwing it off center
+			polygons.polygons[polyIndex].vertexData[0] = origX;
+			polygons.polygons[polyIndex].vertexData[1] = origY;
+			//x is at 4
+			radarVec.x = polygons.polygons[polyIndex].vertexData[4] - origX;
+			//y is at 5
+			radarVec.y = polygons.polygons[polyIndex].vertexData[5] - origY;
 		}
 	}
 };

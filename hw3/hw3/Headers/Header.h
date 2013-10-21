@@ -19,5 +19,6 @@ void Display();
 void Update();
 void GameLoop( int t );
 void InitGraphics(int argc, char *argv[]);
+void DifficultyManager();
 
 #endif

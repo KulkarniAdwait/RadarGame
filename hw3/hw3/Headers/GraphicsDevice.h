@@ -93,16 +93,6 @@ private:
 		}
 	}
 
-	//Adwait Kulkarni
-	//Converts the input co ordinates from Screen to world co ordinates using transform Matrix created in GenerateScreenToWorld()
-	//void world_to_device (int x, int y, float *world_x, float *world_y)
-	//{
-	//	glm::vec4 deviceCoords, worldCoords;
-	//	worldCoords = glm::vec4(x, y, 0, 1);
-	//	deviceCoords = worldToDevice * worldCoords;
-	//	*world_x = deviceCoords.x;
-	//	*world_y = deviceCoords.y;
-	//}
 public:
 	GLint vPosition, vColor, uWorldToDevice;
 

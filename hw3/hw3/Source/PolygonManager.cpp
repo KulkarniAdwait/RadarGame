@@ -54,6 +54,7 @@ void PolygonManager::deletePolygon(int polygonIndex, MyGraphicsDevice gDevice)
 	freeSpot freed = freeSpot(polygons[polygonIndex].vertexCount, polygons[polygonIndex].location, polygons[polygonIndex].colorLocation
 			, polygons[polygonIndex].countLocation, polygonIndex);
 	deletedPolygons.push_back(freed);
+	gDevice.UpdateData(polygons[polygonIndex]);
 	gDevice.DeletePolygon(polygons[polygonIndex].countLocation);
 }
 

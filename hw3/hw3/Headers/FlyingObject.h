@@ -11,7 +11,6 @@
 class FlyingObject
 {
 private:
-	bool recognized;
 	//this is the index into the polygonManager
 	int polyIndex;
 
@@ -41,6 +40,10 @@ private:
 
 public:
 	bool isFriendly;
+	bool endReached;
+	bool recognized;
+
+	int getPolygonIndex() { return this->polyIndex; }
 	FlyingObject(int startSide, PolygonManager& polygons, MyGraphicsDevice& gDevice);
 
 	void PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice);

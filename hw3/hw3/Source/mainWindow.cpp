@@ -19,6 +19,7 @@ Radar *radar;
 std::list<FlyingObject*> flyingObjects;
 int index = 0, vertexCount = 0;
 extern int DIFFICULTY = 10;
+extern int MAX_UFO_COUNT = 2;
 int score = 0;
 const int SCR_FRIENDLY_HIT = -20;
 const int SCR_ENEMY_HIT = 5;
@@ -26,48 +27,41 @@ const int SCR_ENEMY_HIT = 5;
 //left click handles clicks on the canvas
 void HandleMouse(int button, int state, int x, int y)
 {
-	switch(state)
-	{
-	case GLUT_DOWN:
-
-		switch(button)
+	if(state == GLUT_DOWN && button == GLUT_LEFT_BUTTON )
+	{	
+		std::list<FlyingObject*>::iterator it = flyingObjects.begin();
+		while( it != flyingObjects.end() )
 		{
-		case GLUT_LEFT_BUTTON:
-			std::list<FlyingObject*>::iterator it = flyingObjects.begin();
-			while( it != flyingObjects.end() )
+			//can destroy only if recognized
+			if( (*it)->recognized && (**it).CheckHit(x, y, polygonManager, gDevice) )
 			{
-				if( (**it).CheckHit(x, y, polygonManager, gDevice) )
+				//update score
+				//friendly hit. decrese score
+				if((*it)->isFriendly)
 				{
-					//update score
-					if((*it)->isFriendly)
-					{
-						score += SCR_FRIENDLY_HIT;
-					}
-					else
-					{
-						score += SCR_ENEMY_HIT;
-					}
-					//destroy object
-					delete *it;
-					//remove from list
-					it = flyingObjects.erase(it);
-					break;
+					score += SCR_FRIENDLY_HIT;
 				}
+				//enemy hit. increase score
 				else
 				{
-					++it;
+					score += SCR_ENEMY_HIT;
 				}
+				//destroy object
+				//polygonManager.deletePolygon((*it)->getPolygonIndex(), gDevice);
+				delete *it;
+				//remove from list
+				it = flyingObjects.erase(it);
+				break;
 			}
-		break;
-		}
-	break;
+			++it;
+		}	
 	}
 }
 
 void Update()
 {
 	//create UFO's if there are too few
-	if( flyingObjects.size() < MAX_UFO_COUNT )
+	if( flyingObjects.size() <= MAX_UFO_COUNT )
 	{
 		int startSide = std::rand() % 4;
 		FlyingObject *fo = new FlyingObject(startSide, polygonManager, gDevice);
@@ -77,10 +71,31 @@ void Update()
 
 	radar->Update(polygonManager);
 	std::list<FlyingObject*>::iterator it = flyingObjects.begin();
-	for( it = flyingObjects.begin() ; it != flyingObjects.end(); ++it )
+
+	while( it != flyingObjects.end() )
 	{
 		(**it).Update(polygonManager, radar);
+		//if object has reached end of its path then delete it
+		if( (*it)->endReached )
+		{
+			//enemy escaped. decrese score
+			if( (*it)->isFriendly == false )
+			{
+				score -= SCR_ENEMY_HIT;
+			}
+			
+			//destroy object
+			polygonManager.deletePolygon( (*it)->getPolygonIndex(), gDevice);
+			delete *it;
+			//remove from list
+			it = flyingObjects.erase(it);
+		}
+		else
+		{
+			++it;
+		}
 	}
+
 	polygonManager.Update(gDevice);
 }
 
@@ -114,6 +129,12 @@ int main(int argc, char *argv[]) {
 	glutMainLoop();
 
     return 0;
+}
+
+void DifficultyManager()
+{
+	//increment the spped and the number off UFO's based on user performance here
+
 }
 
 

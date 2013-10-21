@@ -46,6 +46,7 @@ float DistanceFormula (float x1, float x2, float y1, float y2)
 FlyingObject::FlyingObject(int startSide, PolygonManager& polygons, MyGraphicsDevice& gDevice)
 {
 	recognized = false;
+	endReached = false;
 	SPEED = 0.00099f;
 
 	polyIndex = -1;
@@ -192,6 +193,10 @@ void FlyingObject::Update(PolygonManager& polygons, Radar* radar)
 		}
 		recognized = true;
 	}
+
+	//if object has reached the end of it's path
+	if(alpha > 1.0f)
+		endReached = true;
 }
 
 bool FlyingObject::CheckHit(int x, int y, PolygonManager& polygons, MyGraphicsDevice& gDevice)
