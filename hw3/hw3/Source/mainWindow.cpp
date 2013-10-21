@@ -5,6 +5,7 @@
 #include "../Headers/Radar.h"
 #include "../Headers/GameConstants.h"
 #include "../Headers/FlyingObject.h"
+#include <GL/glui.h>
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -12,7 +13,9 @@
 #include <list>
 
 using namespace std;
-
+GLUI *glui_b;
+GLUI_Panel *scorePanel;
+GLUI_StaticText *txtUpdateIndex;
 MyGraphicsDevice gDevice;
 PolygonManager polygonManager;
 Radar *radar;
@@ -95,7 +98,7 @@ void Update()
 			++it;
 		}
 	}
-
+	txtUpdateIndex->set_text(std::to_string((long double)(score)).c_str());
 	polygonManager.Update(gDevice);
 }
 
@@ -145,7 +148,12 @@ void InitGraphics(int argc, char *argv[])
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_ALPHA);
 	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	glutInitWindowPosition(100, 100);
-	glutCreateWindow("glMultiDrawElements Example");
+	int winHandler = glutCreateWindow("glMultiDrawElements Example");
+
+	glui_b = GLUI_Master.create_glui_subwindow(winHandler, GLUI_SUBWINDOW_BOTTOM );
+	scorePanel = new GLUI_Panel(glui_b, "Score");
+	//txtUpdateIndex = new GLUI_StaticText(draw_panel, "");
+	txtUpdateIndex = glui_b->add_statictext_to_panel(scorePanel, (std::to_string((long double)(score))).c_str());
 
 	// specify glut call backs
 	glutDisplayFunc(Display);

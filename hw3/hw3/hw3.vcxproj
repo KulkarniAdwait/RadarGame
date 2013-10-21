@@ -53,10 +53,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\OpenGL\glm-0.9.4.6\glm;D:\OpenGL\glew-1.10.0\include;D:\OpenGL\freeglut\include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\OpenGL\GLUI\include;D:\OpenGL\glm-0.9.4.6\glm;D:\OpenGL\glew-1.10.0\include;D:\OpenGL\freeglut\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>D:\OpenGL\glew-1.10.0\lib\Release\Win32;D:\OpenGL\freeglut\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>D:\OpenGL\GLUI\lib;D:\OpenGL\glew-1.10.0\lib\Release\Win32;D:\OpenGL\freeglut\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
