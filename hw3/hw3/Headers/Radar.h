@@ -11,6 +11,7 @@
 class Radar
 {
 private:
+	static const int TRACE_VERT_SIZE = 360;
 	std::vector<GLfloat> radarVertices;
 	std::vector<GLfloat> radarColors;
 
@@ -107,9 +108,9 @@ public:
 		traceColors.push_back(0.05f);
 		traceColors.push_back(0.1f);
 
-		for( int i = 0; i < 179; i++ )
+		for( int i = 0; i < TRACE_VERT_SIZE - 1; i++ )
 		{
-			RotatePoints(oldX, oldY, oldX, oldY, 2);
+			RotatePoints(oldX, oldY, oldX, oldY, 360.0f / TRACE_VERT_SIZE);
 
 			traceVertices.push_back(oldX);
 			traceVertices.push_back(oldY);
@@ -129,7 +130,7 @@ public:
 		radarVertices.clear();
 		radarColors.clear();
 
-		polygons.AddPolygon(180, traceVertices, traceColors, gDevice);
+		polygons.AddPolygon(TRACE_VERT_SIZE, traceVertices, traceColors, gDevice);
 		traceVertices.clear();
 		traceColors.clear();
 	}

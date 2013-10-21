@@ -19,7 +19,7 @@ Radar *radar;
 std::list<FlyingObject*> flyingObjects;
 int index = 0, vertexCount = 0;
 extern int DIFFICULTY = 10;
-extern int MAX_UFO_COUNT = 2;
+extern int MAX_UFO_COUNT = 15;
 int score = 0;
 const int SCR_FRIENDLY_HIT = -20;
 const int SCR_ENEMY_HIT = 5;
@@ -61,7 +61,7 @@ void HandleMouse(int button, int state, int x, int y)
 void Update()
 {
 	//create UFO's if there are too few
-	if( flyingObjects.size() <= MAX_UFO_COUNT )
+	if( flyingObjects.size() < MAX_UFO_COUNT )
 	{
 		int startSide = std::rand() % 4;
 		FlyingObject *fo = new FlyingObject(startSide, polygonManager, gDevice);
