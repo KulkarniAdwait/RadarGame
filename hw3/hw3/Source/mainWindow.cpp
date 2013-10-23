@@ -21,11 +21,14 @@ PolygonManager polygonManager;
 Radar *radar;
 std::list<FlyingObject*> flyingObjects;
 int index = 0, vertexCount = 0;
-extern int DIFFICULTY = 10;
-extern int MAX_UFO_COUNT = 15;
+extern int DIFFICULTY = 1;
+extern int MAX_UFO_COUNT = 5;
 int score = 0;
 const int SCR_FRIENDLY_HIT = -20;
 const int SCR_ENEMY_HIT = 5;
+int hitStreak = 0;
+bool levelUp = false;
+const int DIFFICULTY_CAP = 10;
 
 //left click handles clicks on the canvas
 void HandleMouse(int button, int state, int x, int y)
@@ -43,11 +46,13 @@ void HandleMouse(int button, int state, int x, int y)
 				if((*it)->isFriendly)
 				{
 					score += SCR_FRIENDLY_HIT;
+					--hitStreak;
 				}
 				//enemy hit. increase score
 				else
 				{
 					score += SCR_ENEMY_HIT;
+					++hitStreak;
 				}
 				//destroy object
 				//polygonManager.deletePolygon((*it)->getPolygonIndex(), gDevice);
@@ -67,7 +72,7 @@ void Update()
 	if( flyingObjects.size() < MAX_UFO_COUNT )
 	{
 		int startSide = std::rand() % 4;
-		FlyingObject *fo = new FlyingObject(startSide, polygonManager, gDevice);
+		FlyingObject *fo = new FlyingObject(startSide, DIFFICULTY, polygonManager, gDevice);
 		flyingObjects.push_back(fo);
 		fo = NULL;
 	}
@@ -100,6 +105,7 @@ void Update()
 	}
 	txtUpdateIndex->set_text(std::to_string((long double)(score)).c_str());
 	polygonManager.Update(gDevice);
+	DifficultyManager();
 }
 
 void GameLoop( int t )
@@ -137,7 +143,19 @@ int main(int argc, char *argv[]) {
 void DifficultyManager()
 {
 	//increment the spped and the number off UFO's based on user performance here
-
+	if (hitStreak > (DIFFICULTY * 10))
+	{
+		if( DIFFICULTY < DIFFICULTY_CAP )
+		{
+			++DIFFICULTY;
+			hitStreak = 0;
+		}
+		//capping game to 100 UFO's
+		if(MAX_UFO_COUNT <= 100)
+		{
+			MAX_UFO_COUNT += 5;
+		}
+	}
 }
 
 

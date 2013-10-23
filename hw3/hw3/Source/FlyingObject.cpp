@@ -43,11 +43,11 @@ float DistanceFormula (float x1, float x2, float y1, float y2)
 	return glm::sqrt(((x2- x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
 }
 
-FlyingObject::FlyingObject(int startSide, PolygonManager& polygons, MyGraphicsDevice& gDevice)
+FlyingObject::FlyingObject(int startSide, int difficulty, PolygonManager& polygons, MyGraphicsDevice& gDevice)
 {
 	recognized = false;
 	endReached = false;
-	SPEED = 0.00099f;
+	SPEED = difficulty * 0.0005f;
 
 	polyIndex = -1;
 	alpha = 0.0f;

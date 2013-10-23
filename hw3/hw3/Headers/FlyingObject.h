@@ -44,7 +44,7 @@ public:
 	bool recognized;
 
 	int getPolygonIndex() { return this->polyIndex; }
-	FlyingObject(int startSide, PolygonManager& polygons, MyGraphicsDevice& gDevice);
+	FlyingObject(int startSide, int difficulty, PolygonManager& polygons, MyGraphicsDevice& gDevice);
 
 	void PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice);
 
