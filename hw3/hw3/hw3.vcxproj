@@ -11,16 +11,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Explosion.h" />
+    <ClInclude Include="Headers\Explosion.h" />
     <ClInclude Include="Headers\FlyingObject.h" />
     <ClInclude Include="Headers\freeSpots.h" />
     <ClInclude Include="Headers\GameConstants.h" />
     <ClInclude Include="Headers\GraphicsDevice.h" />
-    <ClInclude Include="Headers\Header.h" />
     <ClInclude Include="Headers\polygonData.h" />
     <ClInclude Include="Headers\polygonManager.h" />
     <ClInclude Include="Headers\Radar.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Explosion.cpp" />
     <ClCompile Include="Source\FlyingObject.cpp" />
     <ClCompile Include="Source\GraphicsDevice.cpp" />
     <ClCompile Include="Source\mainWindow.cpp" />

@@ -5,30 +5,43 @@ int PolygonManager::AddPolygon(int vertexCount, std::vector<GLfloat> vertices, s
 {
 	if( deletedPolygons.size() > 0 )
 	{
-		int pIndex = deletedPolygons.front().polyIndex;
-		polygons[pIndex].countLocation = deletedPolygons.front().countLocation;
-		polygons[pIndex].location = deletedPolygons.front().startPosition;
-		polygons[pIndex].colorLocation = deletedPolygons.front().colorLocation;
-		polygons[pIndex].updated = true;
-		polygons[pIndex].vertexCount = deletedPolygons.front().vertexCount;
-		polygons[pIndex].vertexData = vertices;
-		polygons[pIndex].vertexColors = colors;
+		std::list<freeSpot>::iterator it = deletedPolygons.begin();
+		while( it != deletedPolygons.end() )
+		{
+			if( (*it).vertexCount == vertexCount )
+			{
+				//int pIndex = deletedPolygons.front().polyIndex;
+				int pIndex = (*it).polyIndex;
+				polygons[pIndex].countLocation = (*it).countLocation;
+				polygons[pIndex].location = (*it).startPosition;
+				polygons[pIndex].colorLocation = (*it).colorLocation;
+				polygons[pIndex].updated = true;
+				polygons[pIndex].vertexCount = (*it).vertexCount;
+				polygons[pIndex].vertexData = vertices;
+				polygons[pIndex].vertexColors = colors;
 
-		gDevice.UpdateData(polygons[pIndex]);
+				gDevice.UpdateData(polygons[pIndex]);
 
-		deletedPolygons.pop_front();
+				//deletedPolygons.pop_front();
+				it = deletedPolygons.erase(it);
 
-		return pIndex;
+				return pIndex;
+			}
+			else
+			{
+				++it;
+			}
+		}
 	}
-	else
-	{
+	//else
+	//{
 		GLintptr lVertices = -1, lColors = -1;
 		int lCount = -1;
 		gDevice.PushData(vertexCount, vertices, colors, &lVertices, &lColors, &lCount);
 		PolygonData poly = PolygonData(vertexCount, lVertices, vertices, lColors, colors, lCount);
 		polygons.push_back(poly);
 		return polygons.size() - 1;
-	}
+	//}
 }
 
 //deletes polygon from polygon list

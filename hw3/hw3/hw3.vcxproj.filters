@@ -27,9 +27,6 @@
     <ClInclude Include="Headers\GraphicsDevice.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers\Header.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\polygonData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -37,6 +34,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Headers\Radar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Explosion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers\Explosion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -51,6 +54,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\PolygonManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Explosion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

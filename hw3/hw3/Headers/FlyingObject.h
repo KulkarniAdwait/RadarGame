@@ -44,6 +44,8 @@ public:
 	bool recognized;
 
 	int getPolygonIndex() { return this->polyIndex; }
+	GLfloat getOriginX() { return this->originX; }
+	GLfloat getOriginY() { return this->originY; }
 	FlyingObject(int startSide, int difficulty, PolygonManager& polygons, MyGraphicsDevice& gDevice);
 
 	void PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice);

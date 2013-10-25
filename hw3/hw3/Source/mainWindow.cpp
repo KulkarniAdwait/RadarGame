@@ -5,6 +5,7 @@
 #include "../Headers/Radar.h"
 #include "../Headers/GameConstants.h"
 #include "../Headers/FlyingObject.h"
+#include "../Headers/Explosion.h"
 #include <GL/glui.h>
 #include <iostream>
 #include <string>
@@ -20,11 +21,12 @@ MyGraphicsDevice gDevice;
 PolygonManager polygonManager;
 Radar *radar;
 std::list<FlyingObject*> flyingObjects;
+std::list<Explosion*> explosions;
 int index = 0, vertexCount = 0;
 extern int DIFFICULTY = 1;
 extern int MAX_UFO_COUNT = 5;
 int score = 0;
-const int SCR_FRIENDLY_HIT = -20;
+const int SCR_FRIENDLY_HIT = -5;
 const int SCR_ENEMY_HIT = 5;
 int hitStreak = 0;
 bool levelUp = false;
@@ -54,8 +56,12 @@ void HandleMouse(int button, int state, int x, int y)
 					score += SCR_ENEMY_HIT;
 					++hitStreak;
 				}
+
+				//explosion
+				Explosion *nExp = new Explosion((*it)->getOriginX(), (*it)->getOriginY(), polygonManager, gDevice);
+				explosions.push_back(nExp);
+				nExp = NULL;
 				//destroy object
-				//polygonManager.deletePolygon((*it)->getPolygonIndex(), gDevice);
 				delete *it;
 				//remove from list
 				it = flyingObjects.erase(it);
@@ -103,6 +109,26 @@ void Update()
 			++it;
 		}
 	}
+
+
+	std::list<Explosion*>::iterator explosionIt = explosions.begin();
+	while( explosionIt != explosions.end() )
+	{
+		(**explosionIt).Update(polygonManager, gDevice);
+		//if explosion has reached end of lifetime then delete
+		if( (*explosionIt)->isAlive == false )
+		{
+			polygonManager.deletePolygon( (*explosionIt)->getPolygonIndex(), gDevice );
+			delete *explosionIt;
+			explosionIt = explosions.erase(explosionIt);
+		}
+		else
+		{
+			++explosionIt;
+		}
+	}
+
+
 	txtUpdateIndex->set_text(std::to_string((long double)(score)).c_str());
 	polygonManager.Update(gDevice);
 	DifficultyManager();
@@ -128,7 +154,7 @@ int main(int argc, char *argv[]) {
 
 	radar = new Radar();
 	radar->PushData(polygonManager, gDevice);
-
+	
 	//start and direction must be selected randomly
 	std::srand(std::time(NULL));
 
