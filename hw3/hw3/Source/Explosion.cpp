@@ -1,5 +1,6 @@
 #include "../Headers/Explosion.h"
 
+//rotates a given point around 0, 0
 void Explosion::RotatePoints(float x, float y, float& rotX, float& rotY, int angle)
 {
 		using namespace glm;
@@ -20,63 +21,71 @@ void Explosion::RotatePoints(float x, float y, float& rotX, float& rotY, int ang
 		//not updating z & w because they are always 0.0 & 1.0		
 }
 
+
+//create the vertices, colors and push to GPU
 void Explosion::PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice)
-	{
-		//drawing line segments from the center
-		//so the number of sides need to be multiplied
-		int numSides = (360 / ANGLE) * 2;
+{
+	//drawing line segments from the center
+	//so the number of sides need to be multiplied
+	int numSides = (360 / ANGLE) * 2;
 		
-		std::vector<GLfloat> vertices;
-		std::vector<GLfloat> colors;
+	std::vector<GLfloat> vertices;
+	std::vector<GLfloat> colors;
 
-		float oldX = 0.0f;
-		float oldY = (float)RADIUS;
+	float oldX = 0.0f;
+	float oldY = (float)RADIUS;
 
 
-		//find the next n sides by rotating by objAngle
-		//about the origin 0,0
-		for(int i = 0; i < numSides; i++ )
-		{
-			//push center
-			vertices.push_back(0.0f);
-			vertices.push_back(0.0f);
-			vertices.push_back(0.0f);
-			vertices.push_back(1.0f);
+	//find the next n sides by rotating by objAngle
+	//about the origin 0,0
+	//every alternate vertex is the center because we are using a line loop to draw the final geometry
+	for(int i = 0; i < numSides; i++ )
+	{
+		//push center
+		vertices.push_back(0.0f);
+		vertices.push_back(0.0f);
+		vertices.push_back(0.0f);
+		vertices.push_back(1.0f);
 			
-			//red
-			colors.push_back(1.0f);
-			colors.push_back(0.0f);
-			colors.push_back(0.0f);
-			colors.push_back(1.0f);
-			centerIsRed = true;
+		//red
+		colors.push_back(1.0f);
+		colors.push_back(0.0f);
+		colors.push_back(0.0f);
+		colors.push_back(1.0f);
+		centerIsRed = true;
 
-			//push other end of line segment
-			RotatePoints(oldX, oldY, oldX, oldY, ANGLE);
-			vertices.push_back(oldX);
-			vertices.push_back(oldY);
-			vertices.push_back(0.0f);
-			vertices.push_back(1.0f);
+		//push other end of line segment
+		RotatePoints(oldX, oldY, oldX, oldY, ANGLE);
+		vertices.push_back(oldX);
+		vertices.push_back(oldY);
+		vertices.push_back(0.0f);
+		vertices.push_back(1.0f);
 
-			//yellow
-			colors.push_back(1.0f);
-			colors.push_back(1.0f);
-			colors.push_back(0.0f);
-			colors.push_back(1.0f);
-		}
-
-		polyIndex = polygons.AddPolygon(numSides, vertices, colors, gDevice);
-		if(polyIndex != -1)
-		{
-			polygons.TranslatePolygon(originX, originY, polyIndex, 0);
-		}
-		vertices.clear();
-		colors.clear();
+		//yellow
+		colors.push_back(1.0f);
+		colors.push_back(1.0f);
+		colors.push_back(0.0f);
+		colors.push_back(1.0f);
 	}
+
+	//add to polygon manager which will push to GPU
+	polyIndex = polygons.AddPolygon(numSides, vertices, colors, gDevice);
+	if(polyIndex != -1)
+	{
+		//move explosion to desired location on the screen
+		polygons.TranslatePolygon(originX, originY, polyIndex, 0);
+	}
+	vertices.clear();
+	colors.clear();
+}
 
 void Explosion::Update(PolygonManager& polygons, MyGraphicsDevice& gDevice)
 {
+	//update the timers
 	timer <= 0 ? isAlive = false : timer--;
 	colorTimer--;
+
+	//change color if colorTimer has timed out
 	if( colorTimer <= 0 )
 	{
 		//reset timer
@@ -103,7 +112,7 @@ void Explosion::Update(PolygonManager& polygons, MyGraphicsDevice& gDevice)
 			}
 			centerIsRed = false;
 		}
-		else
+		else//make center red
 		{
 			//make others yellow
 			for( int i = 0; i < numVertices * 4; i+=4 )

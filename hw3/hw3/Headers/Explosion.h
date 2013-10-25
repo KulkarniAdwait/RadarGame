@@ -34,7 +34,11 @@ private:
 	static const int ANGLE = 30;
 
 	void RotatePoints(float x, float y, float& rotX, float& rotY, int angle);
+
+	//create the vertices, colors and push to GPU
+	void PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice);
 public:
+	//flag to tell the game if the object is active or not
 	bool isAlive;
 
 	int getPolygonIndex() { return this->polyIndex; }
@@ -49,8 +53,6 @@ public:
 		polyIndex = -1;
 		PushData(polygons, gDevice);
 	}
-
-	void PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice);
 
 	void Update(PolygonManager& polygons, MyGraphicsDevice& gDevice);
 
