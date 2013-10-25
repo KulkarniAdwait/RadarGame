@@ -162,8 +162,7 @@ int main(int argc, char *argv[]) {
 	gDevice.Init();
 
 	//create radar
-	radar = new Radar();
-	radar->PushData(polygonManager, gDevice);
+	radar = new Radar(polygonManager, gDevice);
 	
 	//start and direction of UFOs must be selected randomly
 	//so seed random number generator
@@ -203,7 +202,7 @@ void InitGraphics(int argc, char *argv[])
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_ALPHA);
 	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-	glutInitWindowPosition(100, 100);
+	glutInitWindowPosition(100, 0);
 	int winHandler = glutCreateWindow("Radar Game");
 
 	glui_b = GLUI_Master.create_glui_subwindow(winHandler, GLUI_SUBWINDOW_BOTTOM );

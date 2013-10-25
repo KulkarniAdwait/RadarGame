@@ -26,6 +26,7 @@
     <ClCompile Include="Source\GraphicsDevice.cpp" />
     <ClCompile Include="Source\mainWindow.cpp" />
     <ClCompile Include="Source\PolygonManager.cpp" />
+    <ClCompile Include="Source\Radar.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{93801D73-2804-4D9E-B125-211BF2D74083}</ProjectGuid>
