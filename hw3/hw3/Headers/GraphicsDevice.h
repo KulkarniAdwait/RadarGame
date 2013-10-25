@@ -126,11 +126,14 @@ public:
 	//send data to GPU
 	void PushData(int vertexCount, std::vector<GLfloat> vertices, std::vector<GLfloat> colors, GLintptr* retVertexLocation, GLintptr* retColorLocation, int* countLocation);
 	
-	//send data to GPU
+	//update data in the GPU
 	void UpdateData(PolygonData poly);
 
+	
 	void DeletePolygon(int countIndex)
 	{
+		//polygon i sdeletedby setting its vertex count in the counts array to be 0
+		//this is the counts sent to the GPU
 		counts[countIndex] = 0;
 	}
 };

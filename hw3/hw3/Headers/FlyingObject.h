@@ -37,6 +37,9 @@ private:
 
 	//vector betn object and origin
 	glm::vec2 objVec;
+	
+	void PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice);
+
 
 public:
 	bool isFriendly;
@@ -47,8 +50,6 @@ public:
 	GLfloat getOriginX() { return this->originX; }
 	GLfloat getOriginY() { return this->originY; }
 	FlyingObject(int startSide, int difficulty, PolygonManager& polygons, MyGraphicsDevice& gDevice);
-
-	void PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice);
 
 	void Update(PolygonManager& polygons, Radar* radar);
 

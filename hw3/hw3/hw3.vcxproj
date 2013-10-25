@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Explosion.h" />
     <ClInclude Include="Headers\Explosion.h" />
     <ClInclude Include="Headers\FlyingObject.h" />
     <ClInclude Include="Headers\freeSpots.h" />

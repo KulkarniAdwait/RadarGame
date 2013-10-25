@@ -38,17 +38,12 @@ public:
 	//polygonData* addPolygon(int vertexCount, std::vector<GLfloat> vertices, std::vector<GLfloat> colors, MyGraphicsDevice& gDevice)
 	int AddPolygon(int vertexCount, std::vector<GLfloat> vertices, std::vector<GLfloat> colors, MyGraphicsDevice& gDevice);
 
-	////x and y must be in world co ordinates
-	////returns the index of the polygon in the manager
-	//int FindPolygon(const int x, const int y, const int SELECTION_OFFSET);
-	
 	//translates the given polygon to the dest X & Y
 	//the selectedIndex is used as the origin of the translation
 	void TranslatePolygon(int destX, int destY, int polygonIndex, int selectedIndex);
 
 	//rotates the given polygon around the selected index
 	//the selectedIndex is used as the origin of the translation
-	//void rotatePolygon(int selectedIndex, polygonData& polygon, float angle)
 	void RotatePolygon(int selectedIndex, int polygonIndex, float angle);
 	
 	void Display(MyGraphicsDevice gDevice)

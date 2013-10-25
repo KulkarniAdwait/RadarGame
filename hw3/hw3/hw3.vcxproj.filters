@@ -36,9 +36,6 @@
     <ClInclude Include="Headers\Radar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Explosion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Headers\Explosion.h">
       <Filter>Header Files</Filter>
     </ClInclude>

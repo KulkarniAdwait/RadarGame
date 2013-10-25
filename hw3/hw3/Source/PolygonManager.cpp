@@ -3,14 +3,17 @@
 //Add a new polygon to the GPU buffer
 int PolygonManager::AddPolygon(int vertexCount, std::vector<GLfloat> vertices, std::vector<GLfloat> colors, MyGraphicsDevice& gDevice)
 {
+	//if there are deleted polygons
 	if( deletedPolygons.size() > 0 )
 	{
 		std::list<freeSpot>::iterator it = deletedPolygons.begin();
 		while( it != deletedPolygons.end() )
 		{
+			//if the hole is the right size
 			if( (*it).vertexCount == vertexCount )
 			{
-				//int pIndex = deletedPolygons.front().polyIndex;
+				//copy the relevant data from the hole to the new polygon
+				//and vice versa
 				int pIndex = (*it).polyIndex;
 				polygons[pIndex].countLocation = (*it).countLocation;
 				polygons[pIndex].location = (*it).startPosition;
@@ -20,11 +23,13 @@ int PolygonManager::AddPolygon(int vertexCount, std::vector<GLfloat> vertices, s
 				polygons[pIndex].vertexData = vertices;
 				polygons[pIndex].vertexColors = colors;
 
+				//update the data in the GPU
 				gDevice.UpdateData(polygons[pIndex]);
 
 				//deletedPolygons.pop_front();
 				it = deletedPolygons.erase(it);
 
+				//index of new polygon in the polygon manager
 				return pIndex;
 			}
 			else
@@ -33,15 +38,15 @@ int PolygonManager::AddPolygon(int vertexCount, std::vector<GLfloat> vertices, s
 			}
 		}
 	}
-	//else
-	//{
-		GLintptr lVertices = -1, lColors = -1;
-		int lCount = -1;
-		gDevice.PushData(vertexCount, vertices, colors, &lVertices, &lColors, &lCount);
-		PolygonData poly = PolygonData(vertexCount, lVertices, vertices, lColors, colors, lCount);
-		polygons.push_back(poly);
-		return polygons.size() - 1;
-	//}
+
+	//create new polygon and push to GPU
+	GLintptr lVertices = -1, lColors = -1;
+	int lCount = -1;
+	gDevice.PushData(vertexCount, vertices, colors, &lVertices, &lColors, &lCount);
+	PolygonData poly = PolygonData(vertexCount, lVertices, vertices, lColors, colors, lCount);
+	polygons.push_back(poly);
+	//index of new polygon in the polygon manager
+	return polygons.size() - 1;
 }
 
 //deletes polygon from polygon list
@@ -138,25 +143,3 @@ void PolygonManager::RotatePolygon(int selectedIndex, int polygonIndex, float an
 	}
 	polygons[polygonIndex].updated = true;
 }
-
-////x and y must be in world co ordinates
-////returns the index of the vertex of the selected polygon
-////i.e. which vertex did the user click
-//int PolygonManager::FindPolygon(const int x, const int y, const int SELECTION_OFFSET)
-//{
-//	std::vector<PolygonData>::iterator it;
-//	int index = 0;
-//	for(it = polygons.begin(); it != polygons.end(); it++)
-//	{
-//		for(unsigned int i=0; i < (*it).vertexData.size(); i+=4)
-//		{
-//			if(x + SELECTION_OFFSET >= (*it).vertexData[i] && x - SELECTION_OFFSET <= (*it).vertexData[i]
-//				&& y + SELECTION_OFFSET >= (*it).vertexData[i+1] && y - SELECTION_OFFSET <= (*it).vertexData[i+1])
-//			{
-//				return index;
-//			}
-//		}
-//		index++;
-//	}
-//	return -1;
-//}

@@ -5,7 +5,8 @@
 #define DIVISIONS 10
 enum Sides {Top, Left, Right, Bottom };
 //discretize the walls of the world and then select a start and end position for the flying objects at random
-float Y_VALS[DIVISIONS] = {0.0f //top
+//offsetting the top and left by 20 to prevent geomtry from being drawn that is almost invisible
+float Y_VALS[DIVISIONS] = {20.0f //top
 	, (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 9.0f
 	, 2 * (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 9.0f
 	, (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) //bottom
@@ -17,7 +18,7 @@ float Y_VALS[DIVISIONS] = {0.0f //top
 	, 8 * (SCREEN_HEIGHT - SHIFT_DUE_TO_UI) / 9.0f
 	};
 float X_VALS[DIVISIONS] = {SCREEN_WIDTH / 9.0f
-	, 0.0f //left
+	, 20.0f //left
 	, SCREEN_WIDTH //right
 	, 2 * SCREEN_WIDTH / 9.0f
 	, 3 * SCREEN_WIDTH / 9.0f
@@ -28,16 +29,19 @@ float X_VALS[DIVISIONS] = {SCREEN_WIDTH / 9.0f
 	, 8 * SCREEN_WIDTH / 9.0f
 	};
 
+//Dot product of two vec2's
 float VectorDot(glm::vec2 v1, glm::vec2 v2)
 {
 	return (v1.x * v2.x) + (v1.y * v2.y);
 }
 
+//Returns magnitude of a vec2
 float Magnitude(glm::vec2 v)
 {
 	return glm::sqrt((v.x * v.x) + (v.y * v.y));
 }
 
+//Returns the distance between two points
 float DistanceFormula (float x1, float x2, float y1, float y2)
 {
 	return glm::sqrt(((x2- x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
@@ -129,6 +133,7 @@ void RotatePoints(float x, float y, float& rotX, float& rotY, int angle)
 	//not updating z & w because they are always 0.0 & 1.0		
 }
 
+//create the objects vertices, colors and push data to GPU
 void FlyingObject::PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice)
 {
 	std::vector<GLfloat> vertices;
@@ -162,6 +167,7 @@ void FlyingObject::PushData(PolygonManager& polygons, MyGraphicsDevice& gDevice)
 	colors.clear();
 }
 
+//Translates the object along the path and changes it's color if swept by the radar
 void FlyingObject::Update(PolygonManager& polygons, Radar* radar)
 {
 	if(polyIndex != -1 && alpha <= 1.0f)
@@ -199,6 +205,7 @@ void FlyingObject::Update(PolygonManager& polygons, Radar* radar)
 		endReached = true;
 }
 
+//Checks if x & y intersects the polygons bounds
 bool FlyingObject::CheckHit(int x, int y, PolygonManager& polygons, MyGraphicsDevice& gDevice)
 {
 	if( DistanceFormula(originX, x, originY, y) <= 2 * RADIUS )

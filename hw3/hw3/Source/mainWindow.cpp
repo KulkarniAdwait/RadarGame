@@ -20,16 +20,21 @@ GLUI_StaticText *txtUpdateIndex;
 MyGraphicsDevice gDevice;
 PolygonManager polygonManager;
 Radar *radar;
+//holds all the active UFO's
 std::list<FlyingObject*> flyingObjects;
+//holds all the active explosions
 std::list<Explosion*> explosions;
 int index = 0, vertexCount = 0;
 extern int DIFFICULTY = 1;
 extern int MAX_UFO_COUNT = 5;
 int score = 0;
+//scoring related
 const int SCR_FRIENDLY_HIT = -5;
 const int SCR_ENEMY_HIT = 5;
+//number of continuous hits by player
 int hitStreak = 0;
 bool levelUp = false;
+//highest possible level
 const int DIFFICULTY_CAP = 10;
 
 //left click handles clicks on the canvas
@@ -57,11 +62,11 @@ void HandleMouse(int button, int state, int x, int y)
 					++hitStreak;
 				}
 
-				//explosion
+				//create an explosion
 				Explosion *nExp = new Explosion((*it)->getOriginX(), (*it)->getOriginY(), polygonManager, gDevice);
 				explosions.push_back(nExp);
 				nExp = NULL;
-				//destroy object
+				//destroy UFO
 				delete *it;
 				//remove from list
 				it = flyingObjects.erase(it);
@@ -86,6 +91,7 @@ void Update()
 	radar->Update(polygonManager);
 	std::list<FlyingObject*>::iterator it = flyingObjects.begin();
 
+	//clean up UFO's if they have reached the end of their path
 	while( it != flyingObjects.end() )
 	{
 		(**it).Update(polygonManager, radar);
@@ -110,7 +116,7 @@ void Update()
 		}
 	}
 
-
+	//clean up explosions if they have done animating
 	std::list<Explosion*>::iterator explosionIt = explosions.begin();
 	while( explosionIt != explosions.end() )
 	{
@@ -128,12 +134,15 @@ void Update()
 		}
 	}
 
-
+	//update score display
 	txtUpdateIndex->set_text(std::to_string((long double)(score)).c_str());
 	polygonManager.Update(gDevice);
+
+	//Update level info
 	DifficultyManager();
 }
 
+//Main game loop
 void GameLoop( int t )
 {
 	Update();
@@ -152,10 +161,12 @@ int main(int argc, char *argv[]) {
 	//allocate the buffers
 	gDevice.Init();
 
+	//create radar
 	radar = new Radar();
 	radar->PushData(polygonManager, gDevice);
 	
-	//start and direction must be selected randomly
+	//start and direction of UFOs must be selected randomly
+	//so seed random number generator
 	std::srand(std::time(NULL));
 
 	//run game loop
@@ -166,9 +177,10 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
+//Handles all the data related to the level and dificulty of the game
 void DifficultyManager()
 {
-	//increment the spped and the number off UFO's based on user performance here
+	//increment the speed and the number off UFO's based on user performance
 	if (hitStreak > (DIFFICULTY * 10))
 	{
 		if( DIFFICULTY < DIFFICULTY_CAP )
@@ -184,7 +196,7 @@ void DifficultyManager()
 	}
 }
 
-
+//initialize Open GL
 void InitGraphics(int argc, char *argv[])
 {
 	// initialize glut
@@ -192,7 +204,7 @@ void InitGraphics(int argc, char *argv[])
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_ALPHA);
 	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	glutInitWindowPosition(100, 100);
-	int winHandler = glutCreateWindow("glMultiDrawElements Example");
+	int winHandler = glutCreateWindow("Radar Game");
 
 	glui_b = GLUI_Master.create_glui_subwindow(winHandler, GLUI_SUBWINDOW_BOTTOM );
 	scorePanel = new GLUI_Panel(glui_b, "Score");

@@ -1,5 +1,6 @@
 #include "../Headers/GraphicsDevice.h"
 
+//draws the polygons stored in the GPU
 void MyGraphicsDevice::Display()
 {    
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -18,6 +19,7 @@ void MyGraphicsDevice::Display()
 	glutSwapBuffers();
 }
 
+//send data to GPU
 void MyGraphicsDevice::PushData(int vertexCount, std::vector<GLfloat> vertices, std::vector<GLfloat> colors, GLintptr* retVertexLocation, GLintptr* retColorLocation, int* countLocation)
 {
 	*countLocation = counts.size();
@@ -64,6 +66,7 @@ void MyGraphicsDevice::PushData(int vertexCount, std::vector<GLfloat> vertices, 
 	polygonCount++;
 }
 
+//update data in the GPU
 void MyGraphicsDevice::UpdateData(PolygonData poly)
 {
 	//push data to GPU
